@@ -9,8 +9,8 @@ const client = new Client({
 });
 
 const TOKEN = "YOUR_BOT_TOKEN_HERE";
-const ROLE_ID = "ROLE_ID_TO_LIMIT"; // e.g., "123456789012345678"
-const LIMIT_SECONDS = 4 * 60 * 60; // 4 hours in seconds
+const ROLE_ID = "ROLE_ID_TO_LIMIT"; 
+const LIMIT_SECONDS = 4 * 60 * 60; 
 
 // Store user voice times (persisted daily)
 let voiceData = {};
