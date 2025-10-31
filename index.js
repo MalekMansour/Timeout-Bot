@@ -62,7 +62,6 @@ client.on("messageCreate", async (msg) => {
       .catch(() => {});
   }
 
-  // Cooldown
   if (data.cooldownUntil && now < data.cooldownUntil) {
     if (data.lastMsg && now - data.lastMsg < data.cooldownGap * 1000) {
       await msg.delete().catch(() => {});
