@@ -1,93 +1,246 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  PermissionsBitField,
+  SlashCommandBuilder,
+  REST,
+  Routes,
+} from "discord.js";
 import fs from "fs";
+
+const TOKEN = "";
+const CLIENT_ID = "";
+const ROLE_ID = null; 
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.MessageContent,
   ],
 });
 
-const TOKEN = "YOUR_BOT_TOKEN_HERE";
-const ROLE_ID = "ROLE_ID_TO_LIMIT"; 
-const LIMIT_SECONDS = 4 * 60 * 60; 
+const DATA_FILE = "./timeouts.json";
+let timeouts = fs.existsSync(DATA_FILE)
+  ? JSON.parse(fs.readFileSync(DATA_FILE))
+  : {};
 
-// Store user voice times (persisted daily)
-let voiceData = {};
-const DATA_FILE = "./voiceData.json";
-
-// Load saved data if exists
-if (fs.existsSync(DATA_FILE)) {
-  voiceData = JSON.parse(fs.readFileSync(DATA_FILE));
+function saveData() {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(timeouts, null, 2));
 }
 
-// Reset daily at midnight
-function scheduleDailyReset() {
-  const now = new Date();
-  const millisUntilMidnight =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5) -
-    now;
-  setTimeout(() => {
-    voiceData = {};
-    fs.writeFileSync(DATA_FILE, JSON.stringify(voiceData));
-    console.log("✅ Daily reset complete");
-    scheduleDailyReset();
-  }, millisUntilMidnight);
-}
-scheduleDailyReset();
+// 🧹 Auto cleanup expired timeouts
+setInterval(() => {
+  const now = Date.now();
+  for (const [userId, data] of Object.entries(timeouts)) {
+    if (data.callUntil && data.callUntil < now) data.callUntil = null;
+    if (data.textUntil && data.textUntil < now) data.textUntil = null;
+    if (data.cooldownUntil && data.cooldownUntil < now) {
+      data.cooldownUntil = null;
+      data.cooldownGap = null;
+      data.lastMsg = null;
+    }
+  }
+  saveData();
+}, 30 * 1000);
 
-// When user joins/leaves VC
-client.on("voiceStateUpdate", async (oldState, newState) => {
-  const user = newState.member || oldState.member;
-  if (!user.roles.cache.has(ROLE_ID)) return;
+// 💬 Enforce chat timeouts & cooldowns
+client.on("messageCreate", async (msg) => {
+  if (msg.author.bot) return;
+  const userId = msg.author.id;
+  const data = timeouts[userId];
+  if (!data) return;
 
-  const userId = user.id;
   const now = Date.now();
 
-  // User joins a VC
-  if (!oldState.channelId && newState.channelId) {
-    voiceData[userId] = voiceData[userId] || { total: 0, join: now, blocked: false };
-
-    // Check if already blocked
-    if (voiceData[userId].blocked) {
-      try {
-        await user.voice.disconnect("You reached your 4-hour limit today.");
-      } catch {}
-      return;
-    }
-
-    voiceData[userId].join = now;
+  // Chat timeout
+  if (data.textUntil && now < data.textUntil) {
+    await msg.delete().catch(() => {});
+    return msg.author
+      .send("🚫 You’re muted and can’t send messages right now.")
+      .catch(() => {});
   }
 
-  // User leaves VC
-  else if (oldState.channelId && !newState.channelId) {
-    if (!voiceData[userId] || !voiceData[userId].join) return;
-
-    const sessionTime = (now - voiceData[userId].join) / 1000; // seconds
-    voiceData[userId].total += sessionTime;
-    voiceData[userId].join = null;
-
-    if (voiceData[userId].total >= LIMIT_SECONDS) {
-      voiceData[userId].blocked = true;
-      console.log(`${user.user.tag} reached daily VC limit.`);
+  // Cooldown
+  if (data.cooldownUntil && now < data.cooldownUntil) {
+    if (data.lastMsg && now - data.lastMsg < data.cooldownGap * 1000) {
+      await msg.delete().catch(() => {});
+      return msg.author
+        .send(
+          `⏳ You must wait ${data.cooldownGap}s between messages for now.`
+        )
+        .catch(() => {});
     }
+    data.lastMsg = now;
+    saveData();
   }
-
-  // Save data
-  fs.writeFileSync(DATA_FILE, JSON.stringify(voiceData));
 });
 
-// If user tries to join again after limit reached
+// 🔊 Enforce voice call timeouts
 client.on("voiceStateUpdate", async (oldState, newState) => {
-  const user = newState.member;
-  if (!user || !user.roles.cache.has(ROLE_ID)) return;
+  const member = newState.member;
+  if (!member) return;
 
-  const data = voiceData[user.id];
-  if (data && data.blocked && newState.channelId) {
+  const data = timeouts[member.id];
+  if (!data || !data.callUntil) return;
+
+  const now = Date.now();
+  if (now < data.callUntil && newState.channelId) {
     try {
-      await user.voice.disconnect("You reached your 4-hour VC limit today.");
+      await member.voice.disconnect("🚫 You’re voice-timed out.");
+      console.log(`Disconnected ${member.user.tag} (voice timeout active).`);
     } catch (err) {
-      console.error("Failed to disconnect user:", err);
+      console.error(`Failed to disconnect ${member.user.tag}:`, err);
+    }
+  }
+});
+
+// 🧱 Slash command setup
+const commands = [
+  new SlashCommandBuilder()
+    .setName("timeout")
+    .setDescription("Manage timeouts and cooldowns")
+    .addSubcommand((sub) =>
+      sub
+        .setName("call")
+        .setDescription("Timeout user from voice calls")
+        .addUserOption((opt) =>
+          opt.setName("user").setDescription("User").setRequired(true)
+        )
+        .addIntegerOption((opt) =>
+          opt.setName("minutes").setDescription("Minutes").setRequired(true)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("text")
+        .setDescription("Timeout user from sending messages")
+        .addUserOption((opt) =>
+          opt.setName("user").setDescription("User").setRequired(true)
+        )
+        .addIntegerOption((opt) =>
+          opt.setName("minutes").setDescription("Minutes").setRequired(true)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("remove")
+        .setDescription("Remove all timeouts for a user")
+        .addUserOption((opt) =>
+          opt.setName("user").setDescription("User").setRequired(true)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("cooldown")
+        .setDescription("Put user on chat cooldown")
+        .addUserOption((opt) =>
+          opt.setName("user").setDescription("User").setRequired(true)
+        )
+        .addIntegerOption((opt) =>
+          opt
+            .setName("gap")
+            .setDescription("Seconds between allowed messages")
+            .setRequired(true)
+        )
+        .addIntegerOption((opt) =>
+          opt
+            .setName("duration")
+            .setDescription("Duration in minutes")
+            .setRequired(true)
+        )
+    )
+    .toJSON(),
+];
+
+const rest = new REST({ version: "10" }).setToken(TOKEN);
+
+(async () => {
+  try {
+    await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
+    console.log("✅ Slash commands registered!");
+  } catch (err) {
+    console.error("❌ Failed to register commands:", err);
+  }
+})();
+
+// ⚔️ Command handling
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) return;
+  if (interaction.commandName !== "timeout") return;
+
+  const member = interaction.member;
+  const hasPermission =
+    member.permissions.has(PermissionsBitField.Flags.Administrator) ||
+    (ROLE_ID && member.roles.cache.has(ROLE_ID));
+
+  if (!hasPermission)
+    return interaction.reply({
+      content: "🚫 You don’t have permission to use this command.",
+      ephemeral: true,
+    });
+
+  const sub = interaction.options.getSubcommand();
+  const user = interaction.options.getUser("user");
+  const targetId = user.id;
+  const guildMember = await interaction.guild.members
+    .fetch(targetId)
+    .catch(() => null);
+
+  timeouts[targetId] = timeouts[targetId] || {};
+  const now = Date.now();
+
+  switch (sub) {
+    case "call": {
+      const minutes = interaction.options.getInteger("minutes");
+      timeouts[targetId].callUntil = now + minutes * 60 * 1000;
+      saveData();
+
+      // Immediately disconnect if user is in voice
+      if (guildMember?.voice?.channel) {
+        try {
+          await guildMember.voice.disconnect("Voice timeout applied.");
+          console.log(`🚫 Disconnected ${user.username} immediately.`);
+        } catch (err) {
+          console.error(`Failed to disconnect ${user.username}:`, err);
+        }
+      }
+
+      interaction.reply(
+        `🔇 ${user.username} has been voice-timed out for ${minutes} minutes.`
+      );
+      break;
+    }
+
+    case "text": {
+      const minutes = interaction.options.getInteger("minutes");
+      timeouts[targetId].textUntil = now + minutes * 60 * 1000;
+      saveData();
+      interaction.reply(
+        `💬 ${user.username} has been muted from chat for ${minutes} minutes.`
+      );
+      break;
+    }
+
+    case "remove": {
+      delete timeouts[targetId];
+      saveData();
+      interaction.reply(`✅ All timeouts removed for ${user.username}.`);
+      break;
+    }
+
+    case "cooldown": {
+      const gap = interaction.options.getInteger("gap");
+      const duration = interaction.options.getInteger("duration");
+      timeouts[targetId].cooldownGap = gap;
+      timeouts[targetId].cooldownUntil = now + duration * 60 * 1000;
+      timeouts[targetId].lastMsg = null;
+      saveData();
+      interaction.reply(
+        `⏳ ${user.username} can now only send 1 message every ${gap}s for ${duration} minutes.`
+      );
+      break;
     }
   }
 });
