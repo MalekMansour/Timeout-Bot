@@ -30,7 +30,6 @@ function saveData() {
   fs.writeFileSync(DATA_FILE, JSON.stringify(timeouts, null, 2));
 }
 
-// 🧹 Auto cleanup expired timeouts
 setInterval(() => {
   const now = Date.now();
   for (const [userId, data] of Object.entries(timeouts)) {
