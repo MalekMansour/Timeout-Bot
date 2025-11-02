@@ -83,7 +83,6 @@ client.on("messageCreate", async (msg) => {
   }
 });
 
-// Voice timeout enforcement
 client.on("voiceStateUpdate", async (oldState, newState) => {
   const member = newState.member;
   if (!member) return;
