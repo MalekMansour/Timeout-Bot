@@ -75,7 +75,6 @@ client.on("messageCreate", async (msg) => {
   }
 });
 
-// 🔊 Enforce voice call timeouts
 client.on("voiceStateUpdate", async (oldState, newState) => {
   const member = newState.member;
   if (!member) return;
