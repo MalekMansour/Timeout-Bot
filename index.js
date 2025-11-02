@@ -49,7 +49,6 @@ setInterval(() => {
   saveData();
 }, 30 * 1000);
 
-// Chat timeout & cooldown logic
 client.on("messageCreate", async (msg) => {
   if (msg.author.bot) return;
   const userId = msg.author.id;
