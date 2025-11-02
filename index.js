@@ -60,7 +60,7 @@ client.on("messageCreate", async (msg) => {
 
   if (data.textUntil && now < data.textUntil) {
     await msg.delete().catch(() => {});
-    // ephemeral reply to the user
+
     return msg.channel
       .send({
         content: `🚫 <@${userId}>, you’re muted and can’t send messages.`,
