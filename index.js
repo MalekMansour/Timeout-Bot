@@ -97,7 +97,6 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   }
 });
 
-// Register slash commands
 const commands = [
   new SlashCommandBuilder()
     .setName("timeout")
