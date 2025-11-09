@@ -172,7 +172,6 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
   }
 })();
 
-// Command handler
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand() || interaction.commandName !== "timeout") return;
 
