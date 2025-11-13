@@ -62,7 +62,7 @@ client.on("messageCreate", async (msg) => {
 
     return msg.channel
       .send({
-        content: `🚫 <@${userId}>, you’re muted and can’t send messages.`,
+        content: `<@${userId}>, you’re muted and can’t send messages.`,
       })
       .then((m) => setTimeout(() => m.delete().catch(() => {}), 5000)); 
   }
