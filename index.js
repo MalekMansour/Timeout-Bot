@@ -72,7 +72,7 @@ client.on("messageCreate", async (msg) => {
       await msg.delete().catch(() => {});
       return msg.channel
         .send({
-          content: `⏳ <@${userId}>, you must wait ${data.cooldownGap}s between messages.`,
+          content: `<@${userId}>, you must wait ${data.cooldownGap}s between messages.`,
         })
         .then((m) => setTimeout(() => m.delete().catch(() => {}), 5000));
     }
@@ -181,7 +181,7 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!hasAdmin && !hasAllowedRole) {
     return interaction.reply({
-      content: "🚫 You don’t have permission to use this command.",
+      content: "You don’t have permission to use this command.",
       ephemeral: true,
     });
   }
