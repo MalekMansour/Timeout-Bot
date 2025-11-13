@@ -244,7 +244,7 @@ client.on("interactionCreate", async (interaction) => {
       timeouts[targetId].lastMsg = null;
       saveData();
       return interaction.reply({
-        content: `⌛ ${user.username} can only send 1 msg every ${gap}s for ${duration} minutes.`,
+        content: `${user.username} can only send 1 msg every ${gap}s for ${duration} minutes.`,
         ephemeral: true,
       });
     }
