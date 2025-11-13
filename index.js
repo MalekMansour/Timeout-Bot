@@ -90,7 +90,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   const now = Date.now();
   if (now < data.callUntil && newState.channelId) {
     try {
-      await member.voice.disconnect("🚫 Voice timeout active.");
+      await member.voice.disconnect("Voice timeout active.");
     } catch (err) {
       console.error(`Failed to disconnect ${member.user.tag}:`, err);
     }
