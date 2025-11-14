@@ -73,3 +73,7 @@ The bot must be higher in the role list than any role it tries to check.
 Cooldown checks are very lightweight — safe for large servers.
 
 All messages sent by the bot auto-delete after 5 seconds (spam-free).
+
+📜 License
+
+MIT License — free to use, modify, and share.
