@@ -23,3 +23,11 @@ Limit a user to sending **one message every X seconds**, for a specified duratio
 
 ### 📊 Status Viewer  
 Check any user’s active moderation timers using:  
+/timeout status @user
+
+### 🔐 Permission System
+Only the following users can execute `/timeout` commands:
+- Server administrators  
+- Members with **any** of the allowed roles (defined in `ALLOWED_ROLES`)  
+
+---
