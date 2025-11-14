@@ -222,7 +222,7 @@ client.on("interactionCreate", async (interaction) => {
       timeouts[targetId].textUntil = now + minutes * 60 * 1000;
       saveData();
       return interaction.reply({
-        content: `💬 ${user.username} is chat-timed out for ${minutes} minutes.`,
+        content: `${user.username} is chat-timed out for ${minutes} minutes.`,
         ephemeral: true,
       });
     }
