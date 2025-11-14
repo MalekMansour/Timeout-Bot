@@ -31,3 +31,35 @@ Only the following users can execute `/timeout` commands:
 - Members with **any** of the allowed roles (defined in `ALLOWED_ROLES`)  
 
 ---
+
+🛠️ Slash Commands
+
+The following subcommands are automatically registered:
+
+Command	Description
+/timeout call @user minutes:	Voice timeout
+/timeout text @user minutes:	Chat timeout
+/timeout cooldown @user gap: duration:	Slowmode
+/timeout remove @user	Remove all punishments
+/timeout status @user	View active timeouts
+🔄 Data Persistence
+
+Timeout data is saved in:
+
+timeouts.json
+
+
+It automatically updates every:
+
+Message sent
+
+Timeout creation
+
+Timeout expiration
+
+Cooldown checks
+
+If the bot restarts, all active timeouts remain enforced.
+
+▶️ Run the Bot
+node index.js
