@@ -166,7 +166,7 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
 (async () => {
   try {
     await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-    console.log("✅ Slash commands registered!");
+    console.log("Slash commands registered!");
   } catch (err) {
     console.error("❌ Failed to register commands:", err);
   }
