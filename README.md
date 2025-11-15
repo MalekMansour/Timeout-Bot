@@ -32,7 +32,7 @@ Only the following users can execute `/timeout` commands:
 
 ---
 
-🛠️ Slash Commands
+### 🛠️ Slash Commands
 
 The following subcommands are automatically registered:
 
@@ -42,6 +42,7 @@ Command	Description
 /timeout cooldown @user gap: duration:	Slowmode
 /timeout remove @user	Remove all punishments
 /timeout status @user	View active timeouts
+
 🔄 Data Persistence
 
 Timeout data is saved in:
