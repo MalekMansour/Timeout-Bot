@@ -65,7 +65,7 @@ If the bot restarts, all active timeouts remain enforced.
 ### ▶️ Run the Bot
 node index.js
 
-🧠 Notes & Tips
+### 🧠 Notes & Tips
 
 The bot needs Manage Messages & Disconnect Members permissions.
 
@@ -75,6 +75,6 @@ Cooldown checks are very lightweight — safe for large servers.
 
 All messages sent by the bot auto-delete after 5 seconds (spam-free).
 
-📜 License
+### 📜 License
 
 MIT License — free to use, modify, and share.
