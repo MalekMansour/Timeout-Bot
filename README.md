@@ -43,7 +43,7 @@ Command	Description
 /timeout remove @user	Remove all punishments
 /timeout status @user	View active timeouts
 
-🔄 Data Persistence
+### 🔄 Data Persistence
 
 Timeout data is saved in:
 
@@ -62,7 +62,7 @@ Cooldown checks
 
 If the bot restarts, all active timeouts remain enforced.
 
-▶️ Run the Bot
+### ▶️ Run the Bot
 node index.js
 
 🧠 Notes & Tips
