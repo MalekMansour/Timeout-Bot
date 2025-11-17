@@ -23,12 +23,12 @@ Limit a user to sending **one message every X seconds**, for a specified duratio
 Check any user’s active moderation timers using:  
 /timeout status @user
 
-### 🔐 Permission System
+# 🔐 Permission System
 Only the following users can execute `/timeout` commands:
 - Server administrators  
 - Members with **any** of the allowed roles (defined in `ALLOWED_ROLES`)  
 
-### 🛠️ Slash Commands
+# 🛠️ Slash Commands
 
 The following subcommands are automatically registered:
 
@@ -39,7 +39,7 @@ Command	Description
 /timeout remove @user	Remove all punishments
 /timeout status @user	View active timeouts
 
-### 🔄 Data Persistence
+# 🔄 Data Persistence
 
 It automatically updates every:
 
@@ -50,7 +50,7 @@ It automatically updates every:
 
 If the bot restarts, all active timeouts remain enforced.
 
-### 🧠 Notes & Tips
+# 🧠 Notes & Tips
 
 The bot needs Manage Messages & Disconnect Members permissions.
 
