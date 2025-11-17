@@ -45,25 +45,14 @@ Command	Description
 
 ### 🔄 Data Persistence
 
-Timeout data is saved in:
-
-timeouts.json
-
-
 It automatically updates every:
 
-Message sent
-
-Timeout creation
-
-Timeout expiration
-
-Cooldown checks
+- Message sent
+- Timeout creation
+- Timeout expiration
+- Cooldown checks
 
 If the bot restarts, all active timeouts remain enforced.
-
-### ▶️ Run the Bot
-node index.js
 
 ### 🧠 Notes & Tips
 
