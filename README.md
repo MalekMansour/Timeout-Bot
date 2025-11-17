@@ -8,8 +8,6 @@ The bot also automatically enforces the restrictions in real-time:
 - Tracks cooldowns per-user  
 - Persists data automatically using `timeouts.json`
 
----
-
 ## ✨ Features
 
 ### 🔇 Voice Timeout  
@@ -29,8 +27,6 @@ Check any user’s active moderation timers using:
 Only the following users can execute `/timeout` commands:
 - Server administrators  
 - Members with **any** of the allowed roles (defined in `ALLOWED_ROLES`)  
-
----
 
 ### 🛠️ Slash Commands
 
