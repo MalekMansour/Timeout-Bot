@@ -8,18 +8,18 @@ The bot also automatically enforces the restrictions in real-time:
 - Tracks cooldowns per-user  
 - Persists data automatically using `timeouts.json`
 
-## ✨ Features
+### ✨ Features
 
-### 🔇 Voice Timeout  
+## 🔇 Voice Timeout  
 Prevent a user from joining **any voice channel** for a set number of minutes.
 
-### 💬 Chat Timeout  
+## 💬 Chat Timeout  
 Block a user from sending **any messages** for a chosen duration.
 
-### ⌛ Chat Cooldown  
+## ⌛ Chat Cooldown  
 Limit a user to sending **one message every X seconds**, for a specified duration.
 
-### 📊 Status Viewer  
+## 📊 Status Viewer  
 Check any user’s active moderation timers using:  
 /timeout status @user
 
