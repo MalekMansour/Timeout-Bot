@@ -30,14 +30,12 @@ Only the following users can execute `/timeout` commands:
 
 # 🛠️ Slash Commands
 
-The following subcommands are automatically registered:
-
-Command	Description
-/timeout call @user minutes:	Voice timeout
-/timeout text @user minutes:	Chat timeout
-/timeout cooldown @user gap: duration:	Slowmode
-/timeout remove @user	Remove all punishments
-/timeout status @user	View active timeouts
+Command	Description:
+- /timeout call @user minutes:	Voice timeout
+- /timeout text @user minutes:	Chat timeout
+- /timeout cooldown @user gap: duration:	Slowmode
+- /timeout remove @user	Remove all punishments
+- /timeout status @user	View active timeouts
 
 # 🔄 Data Persistence
 
