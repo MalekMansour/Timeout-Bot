@@ -62,4 +62,4 @@ All messages sent by the bot auto-delete after 5 seconds (spam-free).
 
 ### 📜 License
 
-MIT License — free to use, modify, and share.
+MIT License. Free to use, modify, and share.
