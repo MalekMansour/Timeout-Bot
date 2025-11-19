@@ -23,12 +23,12 @@ Limit a user to sending **one message every X seconds**, for a specified duratio
 Check any user’s active moderation timers using:  
 /timeout status @user
 
-# 🔐 Permission System
+## 🔐 Permission System
 Only the following users can execute `/timeout` commands:
 - Server administrators  
 - Members with **any** of the allowed roles (defined in `ALLOWED_ROLES`)  
 
-# 🛠️ Slash Commands
+## 🛠️ Slash Commands
 
 Command	Description:
 - /timeout call @user minutes:	Voice timeout
@@ -37,7 +37,7 @@ Command	Description:
 - /timeout remove @user	Remove all punishments
 - /timeout status @user	View active timeouts
 
-# 🔄 Data Persistence
+## 🔄 Data Persistence
 
 It automatically updates every:
 
@@ -48,7 +48,7 @@ It automatically updates every:
 
 If the bot restarts, all active timeouts remain enforced.
 
-# 🧠 Notes & Tips
+## 🧠 Notes & Tips
 
 The bot needs Manage Messages & Disconnect Members permissions.
 
@@ -58,6 +58,6 @@ Cooldown checks are very lightweight safe for large servers.
 
 All messages sent by the bot auto-delete after 5 seconds (spam-free).
 
-# 📜 License
+## 📜 License
 
 MIT License. Free to use, modify, and share.
