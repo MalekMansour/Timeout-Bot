@@ -8,7 +8,7 @@ The bot also automatically enforces the restrictions in real-time:
 - Tracks cooldowns per-user  
 - Persists data automatically using `timeouts.json`
 
-# ✨ Features
+## ✨ Features
 
 ### 🔇 Voice Timeout  
 Prevent a user from joining **any voice channel** for a set number of minutes.
